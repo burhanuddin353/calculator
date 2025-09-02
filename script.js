@@ -31,7 +31,7 @@ function clear() {
 
 function checkAndUpdateDisplay() {
     if (operator != null && num1 != null && num2 != null) {
-        num1 = operate(operator, num1, num2);
+        num1 = operate(operator, +num1, +num2);
         num2 = null;
         display(num1);
     } 
@@ -44,12 +44,11 @@ function equal() {
 const output = document.querySelector("#output");
 const digit = document.querySelector("#container");
 
-function display(number) {
-    output.textContent = number;
+function display(text) { 
+    output.textContent = text;
 }
 
 digit.addEventListener("click", e => {
-    console.log(e);
     switch (e.target.id) {
         case "one":
         case "two":
@@ -61,13 +60,14 @@ digit.addEventListener("click", e => {
         case "eight":
         case "nine":
         case "zero":
-            let digit = +e.target.textContent;
-            if (num1) {
-                num2 = digit; 
+            let digit = e.target.textContent;
+            if (!operator) {
+                num1 = num1 ? num1 + digit : digit;
+                display(num1);
             } else {
-                num1 = digit;
+                num2 = num2 ? num2 + digit : digit;
+                display(num2);
             }
-            display(digit);
             break;
         case "add":
             checkAndUpdateDisplay();
@@ -90,6 +90,15 @@ digit.addEventListener("click", e => {
             break;
         case "clear":
             clear();
+            break;
+        case "decimal":
+            if (!operator) {
+                num1 = !num1.split("").includes(".") ? num1 + "." : num1;
+                display(num1);
+            } else {
+                num2 = !num2.split("").includes(".") ? num2 + "." : num2;
+                display(num2);
+            }
             break;
         default: break;
     }
